@@ -161,7 +161,15 @@ fi
 
 echo -e "\n🏗️ ${COLOR}Getting a git gh nix-shell...${NC}\n"
 
-nix-shell -p git gh --run "gh auth login && gh auth setup-git && git clone \"$GH_SSH_URL\" \"$TARGET_DIR\""
+nix-shell -p git gh --run "
+  gh auth login &&
+  gh auth setup-git &&
+  if [ ! -d \"$TARGET_DIR\" ]; then
+    git clone \"$GH_SSH_URL\" \"$TARGET_DIR\"
+  else
+    cd \"$TARGET_DIR\" && git remote set-url origin \"$GH_SSH_URL\" && git pull
+  fi
+"
 
 # ############## #
 # INSTALL DOCKER #
