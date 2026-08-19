@@ -200,7 +200,7 @@ fi
 # #################### #
 
 if [ "$is_nixos" = false ]; then
-  echo -e "\n🏗️ ${COLOR}Installing home-manager (Final Compatibility Fix)...${NC}\n"
+  echo -e "\n🏗️ ${COLOR}Installing home-manager...${NC}\n"
 
   # 1. Clean up the failed config folder so the installer can start fresh
   rm -rf "$HOME/.config/home-manager"
