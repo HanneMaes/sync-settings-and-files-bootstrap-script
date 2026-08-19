@@ -127,6 +127,34 @@ esac
 
 echo -e "\n🏗️ ${COLOR}System update complete${NC}\n"
 
+# ########################### #
+# INSTALL NIX PACKAGE MANAGER #
+# ########################### #
+
+if [ "$is_nixos" = false ]; then
+  if ! command -v nix &>/dev/null; then
+    echo -e "🏗️ Installing Nix (The Modern Way)..."
+
+    # Run the Determinate Systems installer
+    curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install --no-confirm
+
+    # Source Nix immediately so it works in the current shell session
+    if [ -e '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh' ]; then
+      . '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh'
+    fi
+
+    # Verify installation
+    if command -v nix &>/dev/null; then
+      echo -e "\n🏗️ ${COLOR}Nix installed successfully: $(nix --version)${NC}\n"
+    else
+      echo -e "\n🏗️ ${COLOR}Nix installation failed or is not in PATH.${NC}\n"
+      exit 1
+    fi
+  else
+    echo -e "\n🏗️ ${COLOR}Nix is already installed${NC}\n"
+  fi
+fi
+
 # ################### #
 #  GIT / GH NIX-SHELL #
 # ################### #
@@ -157,34 +185,6 @@ if [ "$is_nixos" = false ]; then
   echo -e "\n🏗️ ${COLOR}Docker setup complete. (Note: You may need to log out and back in for group changes to take effect)${NC}\n"
 else
   echo -e "\n🏗️ ${COLOR}NixOS detected: Docker is managed via configuration.nix${NC}\n"
-fi
-
-# ########################### #
-# INSTALL NIX PACKAGE MANAGER #
-# ########################### #
-
-if [ "$is_nixos" = false ]; then
-  if ! command -v nix &>/dev/null; then
-    echo -e "🏗️ Installing Nix (The Modern Way)..."
-
-    # Run the Determinate Systems installer
-    curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install --no-confirm
-
-    # Source Nix immediately so it works in the current shell session
-    if [ -e '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh' ]; then
-      . '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh'
-    fi
-
-    # Verify installation
-    if command -v nix &>/dev/null; then
-      echo -e "\n🏗️ ${COLOR}Nix installed successfully: $(nix --version)${NC}\n"
-    else
-      echo -e "\n🏗️ ${COLOR}Nix installation failed or is not in PATH.${NC}\n"
-      exit 1
-    fi
-  else
-    echo -e "\n🏗️ ${COLOR}Nix is already installed${NC}\n"
-  fi
 fi
 
 # #################### #
