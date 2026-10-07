@@ -23,8 +23,7 @@ NIX_CHANNEL="nixos-24.11" # or "nixpkgs-24.11" for non-NixOS
 HM_RELEASE="24.11"
 
 # GitHub repo (used for cloning + gh auth)
-GH_REPO="HanneMaes/sync-settings-and-files"
-GH_SSH_URL="git@github.com:${GH_REPO}.git"
+GH_SSH_URL="https://github.com/HanneMaes/sync-settings-and-files.git"
 
 # Directory locations
 if grep -qi microsoft /proc/version 2>/dev/null; then
