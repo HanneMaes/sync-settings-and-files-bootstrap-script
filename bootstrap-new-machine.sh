@@ -161,15 +161,20 @@ fi
 
 echo -e "\n🏗️ ${COLOR}Getting a git gh nix-shell...${NC}\n"
 
-nix-shell -p git gh --run "
-  gh auth login &&
-  gh auth setup-git &&
-  if [ ! -d \"$TARGET_DIR\" ]; then
-    git clone \"$GH_SSH_URL\" \"$TARGET_DIR\"
-  else
-    cd \"$TARGET_DIR\" && git remote set-url origin \"$GH_SSH_URL\" && git pull
+export TARGET_DIR GH_SSH_URL
+
+nix-shell -p git gh --run '
+  if ! gh auth status --hostname github.com >/dev/null 2>&1; then
+    gh auth login --hostname github.com --git-protocol https --web </dev/tty || exit 1
   fi
-"
+  gh auth setup-git
+
+  if [ ! -d "$TARGET_DIR/.git" ]; then
+    git clone "$GH_SSH_URL" "$TARGET_DIR"
+  else
+    cd "$TARGET_DIR" && git remote set-url origin "$GH_SSH_URL" && git pull
+  fi
+'
 
 # ############## #
 # INSTALL DOCKER #
